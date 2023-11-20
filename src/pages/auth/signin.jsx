@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Typography, TextField, Button, Alert, AlertTitle } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { LOCAL, ENDPOINTS } from '../../common/utils';
 import { useDispatch } from 'react-redux';
@@ -16,6 +16,8 @@ export const SignIn = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const message = location.state
 
     const onSubmit = (data) => {
         let signInURL = LOCAL.SERVER_PATH + ENDPOINTS.SIGNIN;
@@ -28,7 +30,11 @@ export const SignIn = () => {
             dispatch(setUserRole(response.data.role[0].authority));
             dispatch(setUserToken(response.data.token));
             dispatch(setUserId(response.data.userId));
-            navigate('/');
+            if(message != 'undefined' || message != null){
+                navigate(-1);
+            }else
+                navigate('/');
+            
         }).catch(error => {
             console.debug(error)
             setError(true)
@@ -40,6 +46,13 @@ export const SignIn = () => {
                 setErrorMessage(error.response.data.error)
         });
     };
+
+    useEffect(() => {
+        if(message != 'undefined' || message != null){
+            setError(true)
+            setErrorMessage(message.message)
+        }
+      }, []);
 
     return (
         <Container maxWidth="xs" className="center"> 

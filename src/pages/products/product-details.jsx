@@ -2,19 +2,25 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Typography, Container, Box, TextField, Button } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { selectUserRole } from '../../common/role-manager';
 
 export const ProductDetails = (props) => {
     const { register, handleSubmit } = useForm();
     const location = useLocation();
     const product = location.state
     const navigate = useNavigate();
+    const userRole = useSelector(selectUserRole);
     
     const proceedToCheckout = (quantity) => {
         let checkoutDetails = {
             'quantity': quantity,
             'product': product,
         }
-        navigate('/checkout', { state: checkoutDetails });
+        if(userRole === 'DEFAULT')
+            navigate('/signin', { state: {'message' : 'Please sign in or sign up before placing your order'} });
+        else
+            navigate('/checkout', { state: checkoutDetails });
     }
     
     return (

@@ -14,7 +14,7 @@ export const ProductTemplate = (props) => {
     }
 
     return (
-        <Card sx={{ maxWidth: 350, minHeight: 450, marginRight: 4, marginLeft: 4, marginTop: 8, float: "left" }}>
+        <Card sx={{ maxWidth: 350, minHeight: 450, marginTop: 8 }}>
             <CardMedia
                 sx={{ height: 200 }}
                 image={product.imageUrl}
@@ -33,7 +33,7 @@ export const ProductTemplate = (props) => {
                         </Typography>
                     </div>
                 </Typography>
-                <Typography variant="body2" color="text.secondary" style={{ textAlign: 'justify', marginTop: 10 }}>
+                <Typography variant="body2" color="text.secondary" style={{ textAlign: 'justify', marginTop: 20, minHeight: 115 }}>
                     {product.description}
                 </Typography>
             </CardContent>
@@ -42,7 +42,7 @@ export const ProductTemplate = (props) => {
                     <Button variant="contained" size="small" onClick={() => handleNavigation(product)}>BUY</Button>
                 </div>
                 {
-                    role.toUpperCase === 'ADMIN' ?
+                    role.toUpperCase() === 'ADMIN' ?
                         <div>
                             <ModeEditOutlineIcon size="small" style={{ textAlign: 'left', margin: 5 }} />
                             <DeleteIcon size="small" style={{ textAlign: 'left', margin: 5 }} />
