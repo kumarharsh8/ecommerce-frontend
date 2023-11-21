@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, AlertTitle  } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { LOCAL, ENDPOINTS } from '../../common/utils';
@@ -6,17 +6,28 @@ import { selectUserToken } from '../../common/role-manager';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import "../../common/style.css"
+import { useLocation } from 'react-router';
 
 export const AddProduct = () => {
 
-    const { register, handleSubmit } = useForm();
+    const location = useLocation();
+    const { register, handleSubmit, setValue } = useForm();
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [title, setTitle] = useState('Add Product');
+    const [url, setUrl] = useState(LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS);
     const userToken = useSelector(selectUserToken);
 
     const onSubmit = (data) => {
-        let createProductURL = LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS;
-        axios.post(createProductURL, JSON.stringify(data), {
+        if(title === 'Add Product'){
+            handleAddProductAxios(data)
+        }else if(title === 'Modify Product'){
+            handleModifyProductAxios(data)
+        }
+    };
+
+    const handleAddProductAxios = (data) => {
+        axios.post(url, JSON.stringify(data), {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+userToken
@@ -29,7 +40,35 @@ export const AddProduct = () => {
             setSuccess(false)
             console.debug(error)
         });
-    };
+    }
+
+    const handleModifyProductAxios = (data) => {
+        axios.put(url, JSON.stringify(data), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+userToken
+            },
+        }).then(response => {
+            setSuccess(true)
+            setError(false)
+        }).catch(error => {
+            setError(true)
+            setSuccess(false)
+            console.debug(error)
+        });
+    }
+
+    useEffect(() => {
+        let state = location.state
+        if(state !== undefined && state !== null){
+            console.debug(state)
+            setTitle('Modify Product')
+            setUrl(LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS + '/' + state.id)
+            Object.keys(state).forEach((key) => {
+                setValue(key, state[key]);
+            });
+        }
+    }, []);
 
     return (
         <Container maxWidth="xs" style={{ marginTop: '2em' }}>
@@ -39,7 +78,7 @@ export const AddProduct = () => {
                 </Alert>
             </> : <></>}
             <Typography variant="h5" component="h1" gutterBottom>
-                Add Product
+                {title}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField margin="normal" required fullWidth id="name"
@@ -48,7 +87,8 @@ export const AddProduct = () => {
                     <InputLabel id="category">Category</InputLabel>
                     <Select
                         labelId="category" id="category"
-                        label="Select a category" {...register('category')} 
+                        label="Select a category" 
+                        {...register('category')} 
                     >
                         <MenuItem value="">Select...</MenuItem>
                         <MenuItem value="Apparel">Apparel</MenuItem>

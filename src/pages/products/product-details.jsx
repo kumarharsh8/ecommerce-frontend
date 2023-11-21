@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { selectUserRole } from '../../common/role-manager';
 
-export const ProductDetails = (props) => {
+export const ProductDetails = () => {
     const { register, handleSubmit } = useForm();
     const location = useLocation();
     const product = location.state
@@ -31,7 +31,7 @@ export const ProductDetails = (props) => {
             </Box>
             <Box style={{flex: 1, textAlign: 'justify', display: 'grid', placeContent: 'center'}}>
                 <Typography style={{marginBottom: 10}}>
-                    <span style={{ fontWeight: 'bold', fontSize: 30, marginRight: 10 }}>Nike Revolution 6</span>
+                    <span style={{ fontWeight: 'bold', fontSize: 30, marginRight: 10 }}>{product.name}</span>
                     <span style={{ backgroundColor: '#1976d2', padding: 10, borderRadius: 20, verticalAlign: 'text-bottom', color: 'white'}}>Available Quantity: {product.availableItems}</span>
                 </Typography>
                 <Typography style={{marginBottom: 20}}>

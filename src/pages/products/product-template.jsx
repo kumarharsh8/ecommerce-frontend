@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { selectUserToken } from "../../common/role-manager";
 
 export const ProductTemplate = (props) => {
+    
     const navigate = useNavigate();
     const { role } = props;
     const { product } = props
@@ -76,7 +77,9 @@ export const ProductTemplate = (props) => {
                 {
                     role.toUpperCase() === 'ADMIN' ?
                         <div>
-                            <ModeEditOutlineIcon size="small" style={{ textAlign: 'left', color: '#424242' }} />
+                            <IconButton onClick={() => navigate(`/modifyProduct`, { state: product })} aria-label="delete">
+                                <ModeEditOutlineIcon size="small" style={{ textAlign: 'left', color: '#424242' }} />
+                            </IconButton>
                             <IconButton onClick={handleOpen} aria-label="delete">
                                 <DeleteIcon size="small" style={{ textAlign: 'left', color: '#424242' }} />
                             </IconButton>
