@@ -8,7 +8,7 @@ import SearchBar from '../searchbar/searchbar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { selectUserRole, setUserRole } from '../../common/role-manager';
+import { selectUserRole, setUserRole, setUserId } from '../../common/role-manager';
 import "./navbar.css";
 
 export const Navbar = () => {
@@ -18,6 +18,7 @@ export const Navbar = () => {
 
     const handleLogout = () => {
         dispatch(setUserRole('DEFAULT'));
+        dispatch(setUserId(null));
         navigate('/');
     };
 

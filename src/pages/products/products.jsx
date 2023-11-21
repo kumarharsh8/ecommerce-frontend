@@ -114,7 +114,7 @@ export const Products = () => {
                     isDatasetLoading ? (<p>Loading...</p>) : (
                         <div>
                             {products.length === 0 ? (
-                                <p>No products available.</p>
+                                <Box style={{marginTop: '15em'}}>No products available.</Box>
                             ) : (
                                 <Grid container spacing={6}>
                                     {
@@ -126,6 +126,8 @@ export const Products = () => {
                                                         onViewDetails={handleViewDetails}
                                                         role={userRole}
                                                         product={product}
+                                                        products={products}
+                                                        setProducts={setProducts}
                                                     />
                                                 </Paper>
                                             </Grid>

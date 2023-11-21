@@ -17,7 +17,9 @@ export const SignIn = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
-    const message = location.state
+    const message = null
+    if(location.state !== null)
+        message = location.state
 
     const onSubmit = (data) => {
         let signInURL = LOCAL.SERVER_PATH + ENDPOINTS.SIGNIN;
@@ -30,7 +32,7 @@ export const SignIn = () => {
             dispatch(setUserRole(response.data.role[0].authority));
             dispatch(setUserToken(response.data.token));
             dispatch(setUserId(response.data.userId));
-            if(message != 'undefined' || message != null){
+            if(message !== 'undefined' || message !== null){
                 navigate(-1);
             }else
                 navigate('/');
@@ -48,7 +50,7 @@ export const SignIn = () => {
     };
 
     useEffect(() => {
-        if(message != 'undefined' || message != null){
+        if(message !== 'undefined' && message !== null){
             setError(true)
             setErrorMessage(message.message)
         }
