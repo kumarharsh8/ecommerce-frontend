@@ -1,28 +1,40 @@
 import React, { useState } from 'react';
-import { Stepper, Step, StepLabel, Button, Box } from '@mui/material';
+import { Stepper, Step, StepLabel, Button, Box, Alert, AlertTitle } from '@mui/material';
 import { Address } from '../address/address';
 import { ConfirmDetails } from './confirm-details';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const steps = ['Items', 'Address', 'ConfirmDetails'];
 
 export const Checkout = () => {
     
     const location = useLocation();
-    const details = location.state
+    const checkoutDetails = location.state
     const [activeStep, setActiveStep] = useState(1);
-    const [addressDetails, setAddreddDetails] = useState(null);
+    const [address, setAddress] = useState('');
+    const [addressSelected, setAddressSelected] = useState(true);
 
-    const handleNext = (data) => {
-        console.debug('data:', data)
-        setAddreddDetails(data);
+    const handleNext = () => {
+        if(activeStep >= 1 && address == null){
+            setAddressSelected(false)
+            return
+        }
+        
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
+
+    const manageAddress = (data) => {
+        if(data === '' && activeStep === 1){
+            setAddressSelected(false)
+        }else{
+            setAddressSelected(true)
+            setAddress(data);
+        }
+    }
 
     let navigate = useNavigate();
 
     const handleBack = () => {
-        console.debug('activeStep: ', activeStep)
         if (activeStep === 1)
             navigate(-1);
         else
@@ -32,14 +44,10 @@ export const Checkout = () => {
     const getStepContent = (step) => {
         switch (step) {
             case 1:
-                return <Address onNext={handleNext} />;
+                return <Address manageAddress={manageAddress} />;
             case 2:
-                let checkoutDetails = {
-                    ...details,
-                    'address': addressDetails
-                }
-                console.debug(checkoutDetails)
-                return <ConfirmDetails data={checkoutDetails}/>;
+                var data = {...checkoutDetails, address}
+                return <ConfirmDetails state = {data} />;
             default:
                 return '';
         }
@@ -54,10 +62,22 @@ export const Checkout = () => {
                     </Step>
                 ))}
             </Stepper>
+            
+            <Box>
+                {
+                    !addressSelected ? <>
+                        <Alert severity="warning" style={{
+                            justifyContent: 'center', margin: 'auto', marginTop: 20, maxWidth: 750
+                        }}>
+                            <AlertTitle>Please select or add a address before moving to checkout.    </AlertTitle>
+                        </Alert>
+                    </> : <></>
+                }
+            </Box>
 
             <Box>
                 {activeStep === steps.length ? (
-                    navigate('/home?success=true')
+                    navigate('/', {state: {'purchaseComplete': true, 'message':'Order placed successfully'}})
                 ) : (
                 <Box>
                     {getStepContent(activeStep)}
@@ -65,7 +85,7 @@ export const Checkout = () => {
                         <Button disabled={activeStep === 0} onClick={handleBack}>
                             Back
                         </Button>
-                        <Button variant="contained" onClick={handleNext}>
+                        <Button variant="contained" onClick={() => handleNext('')}>
                             {activeStep === steps.length - 1 ? 'Place Order' : 'Next'}
                         </Button>
                     </Box>

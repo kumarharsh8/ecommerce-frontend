@@ -24,7 +24,6 @@ export const AddProduct = () => {
         }).then(response => {
             setSuccess(true)
             setError(false)
-            console.debug(response)
         }).catch(error => {
             setError(true)
             setSuccess(false)

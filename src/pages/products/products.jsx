@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { ProductTemplate } from './product-template'
 import { ProductDetails } from './product-details';
-import { Container, InputLabel, ToggleButton, ToggleButtonGroup, FormControl, MenuItem, Select, Grid, Paper } from '@mui/material';
+import { Container, InputLabel, ToggleButton, ToggleButtonGroup, FormControl, MenuItem, Select, Grid, Paper, Alert, AlertTitle } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectUserRole } from '../../common/role-manager';
 import { LOCAL, ENDPOINTS } from '../../common/utils';
 import axios from 'axios';
 import { Box, styled } from '@mui/system';
+import { useLocation } from 'react-router';
+import { auto } from '@popperjs/core';
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
     margin: '10px', // Adjust margin as needed
@@ -14,13 +16,29 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
 
 export const Products = () => {
 
+    const location = useLocation();
     const userRole = useSelector(selectUserRole);
     const [category, setCategory] = useState('all');
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDatasetLoading, setIsDatasetLoading] = useState(true);
     const [products, setProducts] = useState(null);
+    const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [showBox, setShowBox] = useState(true);
 
     useEffect(() => {
+
+        if (location.state != 'undefined' && location.state != null) {
+            setPurchaseComplete(location.state.purchaseComplete)
+            setMessage(location.state.message)
+        }else{
+            setPurchaseComplete(false)
+        }
+
+        const hideBoxAfterDelay = setTimeout(() => {
+            setShowBox(false);
+        }, 10000);
+
         const fetchData = async () => {
             let createProductURL = LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS;
             try {
@@ -33,7 +51,11 @@ export const Products = () => {
             }
         };
 
-        fetchData();
+        fetchData(); 
+
+        return () => {
+            clearTimeout(hideBoxAfterDelay);
+        };
     }, []);
 
     const handleCategoryChange = (_, newCategory) => {
@@ -50,6 +72,18 @@ export const Products = () => {
 
     return (
         <>
+            <Box>
+                {
+                    purchaseComplete ? <>
+                        <Alert severity="success" style={{
+                            justifyContent: 'center', margin: auto, marginTop: 20, maxWidth: 750,
+                            backgroundColor: '#b4f5a6', transition: 'opacity 1s ease-out', opacity: showBox ? 1 : 0,
+                        }}>
+                            <AlertTitle>{message}</AlertTitle>
+                        </Alert>
+                    </> : <></>
+                }
+            </Box>
             <Container sx={{ marginTop: 4 }}>
                 <StyledToggleButtonGroup
                     value={category}
@@ -62,7 +96,7 @@ export const Products = () => {
                     <ToggleButton value="personalCare">Personal Care</ToggleButton>
                 </StyledToggleButtonGroup>
                 <Box>
-                    <FormControl style={{minWidth: 400, float: 'left', marginTop: 25, textAlign: 'justify'}}>
+                    <FormControl style={{ minWidth: 400, float: 'left', marginTop: 25, textAlign: 'justify' }}>
                         <InputLabel id="sortBy">Sort By</InputLabel>
                         <Select
                             labelId="sortBy" id="sortBy"
@@ -75,9 +109,9 @@ export const Products = () => {
                     </FormControl>
                 </Box>
             </Container>
-            <Container style={{ backgroundColor: 'whitesmoke'}}>
+            <Container style={{ backgroundColor: 'whitesmoke' }}>
                 {
-                isDatasetLoading ? ( <p>Loading...</p> ) : (
+                    isDatasetLoading ? (<p>Loading...</p>) : (
                         <div>
                             {products.length === 0 ? (
                                 <p>No products available.</p>

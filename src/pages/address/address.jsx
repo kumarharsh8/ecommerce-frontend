@@ -6,13 +6,12 @@ import axios from 'axios';
 import { selectUserId, selectUserToken } from '../../common/role-manager';
 import { useSelector } from 'react-redux';
 
-export const Address = ({ onNext }) => {
+export const Address = ({ manageAddress }) => {
     const userId = useSelector(selectUserId);
     const userToken = useSelector(selectUserToken);
     const { register, handleSubmit } = useForm();
     const [address, setAddress] = useState(null);
     const [isDatasetLoading, setIsDatasetLoading] = useState(true);
-    const [selectedAddress, setSelectedAddress] = useState(null);
     const selectedAddressReference = useRef('');
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
@@ -24,7 +23,6 @@ export const Address = ({ onNext }) => {
             ...data,
             user: userId
         }
-        console.debug(addressDetails)
         axios.post(saveAddressURL, JSON.stringify(addressDetails), {
             headers: {
                 'Content-Type': 'application/json',
@@ -33,13 +31,14 @@ export const Address = ({ onNext }) => {
         }).then(response => {
             setError(false)
             setSuccess(true)
-            setSelectedAddress(response.data)
         }).catch(error => {
             setError(true)
             setSuccess(false)
             setErrorMessage(error.data)
             console.debug(error)
         });
+
+        manageAddress(addressDetails)
     };
 
     useEffect(() => {
@@ -63,8 +62,7 @@ export const Address = ({ onNext }) => {
 
     const handleAddressSelection = () => {
         const dropdownSelectedAddress = selectedAddressReference.current.value;
-        setSelectedAddress(selectedAddress ?? dropdownSelectedAddress)
-        onNext(selectedAddress)
+        manageAddress(JSON.parse(dropdownSelectedAddress))
     }
 
     return (
@@ -84,12 +82,12 @@ export const Address = ({ onNext }) => {
             <div class="form-group">
                 <label htmlFor="addressDropdown" style={{ marginLeft: '5px', display: 'block' }}>Select Address</label>
                 <select id="addressDropdown" className="form-control" ref={selectedAddressReference} onChange={handleAddressSelection}>
-                    <option value="">Select...</option>
+                    <option value="{}">Select...</option>
                     {
                         isDatasetLoading ? <>Loading</>  : <>
                         {
                             address.map(address => {
-                                return <option value={address.id}>
+                                return <option value={JSON.stringify(address)}>
                                             {address.city} - {address.street}
                                         </option>
                             })
