@@ -22,6 +22,7 @@ export const Products = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDatasetLoading, setIsDatasetLoading] = useState(true);
     const [products, setProducts] = useState(null);
+    const [productList, setProductList] = useState(null);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
     const [orderId, setOrderId] = useState(false);
     const [message, setMessage] = useState(null);
@@ -46,6 +47,7 @@ export const Products = () => {
             try {
                 const response = await axios.get(createProductURL);
                 setProducts(response.data);
+                setProductList(response.data);
                 setIsDatasetLoading(false)
             } catch (error) {
                 console.debug(error)
@@ -61,10 +63,10 @@ export const Products = () => {
     }, []);
 
     const handleCategoryChange = (_, newCategory) => {
-        if (newCategory !== null) {
-            setCategory(newCategory);
-            // Perform any additional actions based on the selected category
-        }
+        if(newCategory === 'All')
+            setProducts(productList)
+        else
+            setProducts(productList.filter(product => product.category == newCategory))
     };
 
     const handleViewDetails = (productId) => {
@@ -92,10 +94,11 @@ export const Products = () => {
                     exclusive
                     onChange={handleCategoryChange}
                 >
-                    <ToggleButton value="all">All</ToggleButton>
-                    <ToggleButton value="apparel">Apparel</ToggleButton>
-                    <ToggleButton value="electronics">Electronics</ToggleButton>
-                    <ToggleButton value="personalCare">Personal Care</ToggleButton>
+                    <ToggleButton value="All">All</ToggleButton>
+                    <ToggleButton value="Apparel">Apparel</ToggleButton>
+                    <ToggleButton value="Electronics">Electronics</ToggleButton>
+                    <ToggleButton value="Furniture">Furniture</ToggleButton>
+                    <ToggleButton value="Personal Care">Personal Care</ToggleButton>
                 </StyledToggleButtonGroup>
                 <Box>
                     <FormControl style={{ minWidth: 400, float: 'left', marginTop: 25, textAlign: 'justify' }}>
