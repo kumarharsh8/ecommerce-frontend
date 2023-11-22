@@ -29,8 +29,9 @@ export const SignIn = () => {
             },
         }).then(response => {
             setError(false)
-            dispatch(setUserRole(response.data.role[0].authority));
             dispatch(setUserToken(response.data.token));
+            //NOTE: I have updated the backend code to pass the user id and the role as to set it accross the application
+            dispatch(setUserRole(response.data.role[0].authority));
             dispatch(setUserId(response.data.userId));
             if(message !== 'undefined' || message !== null){
                 navigate(-1);

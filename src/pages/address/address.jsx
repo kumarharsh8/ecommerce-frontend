@@ -48,6 +48,7 @@ export const Address = ({ manageAddress }) => {
         if(userToken === 'undefined' || userToken === null){
             navigate('/signin', { state: {'message' : 'Please sign in or sign up before placing your order'} });
         }
+        //NOTE: in the backend code we do not have any method to get address by user id and so I have implemented the get address endpoint
         const fetchData = async () => {
             let getAddreddURL = LOCAL.SERVER_PATH + ENDPOINTS.ADDRESS;
             axios.get(getAddreddURL, {

@@ -28,6 +28,7 @@ export const Products = () => {
     const [message, setMessage] = useState(null);
     const [showBox, setShowBox] = useState(true);
     const [sortBy, setSortBy] = useState('');
+    const [showBoxDisplay, setShowBoxDisplay] = useState('flex');
 
     useEffect(() => {
 
@@ -41,7 +42,8 @@ export const Products = () => {
 
         const hideBoxAfterDelay = setTimeout(() => {
             setShowBox(false);
-        }, 10000);
+            setShowBoxDisplay('none')
+        }, 5000);
 
         const fetchData = async () => {
             let createProductURL = LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS;
@@ -81,6 +83,7 @@ export const Products = () => {
             setProducts([...products].sort((a, b) =>  b.price - a.price))
         else if(sortBy === 'lowest-heighest')
             setProducts([...products].sort((a, b) => a.price - b.price))
+        //sorting by average-ratings is not implemented as we do not have any fields or ratings 
         setSortBy(sortBy);
     }
 
@@ -92,6 +95,7 @@ export const Products = () => {
                         <Alert severity="success" style={{
                             justifyContent: 'center', margin: auto, marginTop: 20, maxWidth: 750,
                             backgroundColor: '#b4f5a6', transition: 'opacity 1s ease-out', opacity: showBox ? 1 : 0,
+                            display: showBoxDisplay
                         }}>
                             <AlertTitle>{message}</AlertTitle>
                         </Alert>
