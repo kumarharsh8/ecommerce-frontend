@@ -17,7 +17,7 @@ export const SignIn = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
-    const message = null
+    let message = null
     if(location.state !== null)
         message = location.state
 

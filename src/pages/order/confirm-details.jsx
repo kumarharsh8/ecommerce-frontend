@@ -4,7 +4,6 @@ import { useLocation } from 'react-router';
 
 export const ConfirmDetails = (data) => {
     
-    console.debug('in confirmDetails location.state: ', data)
     const { quantity, product, address } = data.state
 
     return (

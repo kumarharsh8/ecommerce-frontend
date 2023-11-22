@@ -40,7 +40,7 @@ export const Navbar = () => {
                     </Typography>
                 </Link>
                 {userRole.toUpperCase() === 'ADMIN' ? <>
-                    <Link to="/addProduct" style={{margin: 10, color: 'white'}} >
+                    <Link to={{pathname:"/addProduct", state: null}} style={{margin: 10, color: 'white'}} >
                         <Typography variant="body1" color="inherit" component="div">
                             Add Product
                         </Typography>

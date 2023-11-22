@@ -11,7 +11,7 @@ import { useLocation } from 'react-router';
 export const AddProduct = () => {
 
     const location = useLocation();
-    const { register, handleSubmit, setValue } = useForm();
+    const { register, handleSubmit, setValue, reset } = useForm();
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const [title, setTitle] = useState('Add Product');
@@ -60,13 +60,17 @@ export const AddProduct = () => {
 
     useEffect(() => {
         let state = location.state
+        console.debug(state)
         if(state !== undefined && state !== null){
-            console.debug(state)
             setTitle('Modify Product')
             setUrl(LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS + '/' + state.id)
             Object.keys(state).forEach((key) => {
                 setValue(key, state[key]);
             });
+        }else{
+            setTitle('Add Product')
+            setUrl(LOCAL.SERVER_PATH + ENDPOINTS.PRODUCTS)
+            reset();
         }
     }, []);
 

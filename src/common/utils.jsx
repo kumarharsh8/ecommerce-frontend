@@ -6,5 +6,6 @@ export let ENDPOINTS = {
     SIGNUP: '/api/auth/signup',
     SIGNIN: '/api/auth/signin',
     PRODUCTS: '/api/products',
-    ADDRESS: '/api/addresses'
+    ADDRESS: '/api/addresses',
+    ORDERS: '/api/orders',
 }

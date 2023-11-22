@@ -23,6 +23,7 @@ export const Products = () => {
     const [isDatasetLoading, setIsDatasetLoading] = useState(true);
     const [products, setProducts] = useState(null);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [orderId, setOrderId] = useState(false);
     const [message, setMessage] = useState(null);
     const [showBox, setShowBox] = useState(true);
 
@@ -31,6 +32,7 @@ export const Products = () => {
         if (location.state != 'undefined' && location.state != null) {
             setPurchaseComplete(location.state.purchaseComplete)
             setMessage(location.state.message)
+            setOrderId(location.state.orderId)
         }else{
             setPurchaseComplete(false)
         }

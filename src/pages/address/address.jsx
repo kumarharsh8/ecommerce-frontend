@@ -5,8 +5,10 @@ import { LOCAL, ENDPOINTS } from '../../common/utils';
 import axios from 'axios';
 import { selectUserId, selectUserToken } from '../../common/role-manager';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 export const Address = ({ manageAddress }) => {
+
     const userId = useSelector(selectUserId);
     const userToken = useSelector(selectUserToken);
     const { register, handleSubmit } = useForm();
@@ -16,6 +18,7 @@ export const Address = ({ manageAddress }) => {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate()
 
     const onSubmit = (data) => {
         let saveAddressURL = LOCAL.SERVER_PATH + ENDPOINTS.ADDRESS;
@@ -42,6 +45,9 @@ export const Address = ({ manageAddress }) => {
     };
 
     useEffect(() => {
+        if(userToken === 'undefined' || userToken === null){
+            navigate('/signin', { state: {'message' : 'Please sign in or sign up before placing your order'} });
+        }
         const fetchData = async () => {
             let getAddreddURL = LOCAL.SERVER_PATH + ENDPOINTS.ADDRESS;
             axios.get(getAddreddURL, {
