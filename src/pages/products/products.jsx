@@ -27,6 +27,7 @@ export const Products = () => {
     const [orderId, setOrderId] = useState(false);
     const [message, setMessage] = useState(null);
     const [showBox, setShowBox] = useState(true);
+    const [sortBy, setSortBy] = useState('');
 
     useEffect(() => {
 
@@ -74,6 +75,15 @@ export const Products = () => {
         setSelectedProduct(productId);
     };
 
+    const handleSorting = (event) => {
+        const sortBy = event.target.value;
+        if(sortBy === 'heighest-lowest')
+            setProducts([...products].sort((a, b) =>  b.price - a.price))
+        else if(sortBy === 'lowest-heighest')
+            setProducts([...products].sort((a, b) => a.price - b.price))
+        setSortBy(sortBy);
+    }
+
     return (
         <>
             <Box>
@@ -106,6 +116,8 @@ export const Products = () => {
                         <Select
                             labelId="sortBy" id="sortBy"
                             label="Sort By"
+                            onChange={handleSorting}
+                            value={sortBy}
                         >
                             <MenuItem value="average-ratings">Average Ratings</MenuItem>
                             <MenuItem value="heighest-lowest">Price: Highest to Lowest</MenuItem>
